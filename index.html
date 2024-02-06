@@ -8,8 +8,6 @@
         <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500&family=Roboto&display=swap" rel="stylesheet">
     </head>
 
-    <script type="text/javascript" src="app.js"></script>
-
     <body>
         <div class = "game-container">
             <div class = "banner">
@@ -17,13 +15,25 @@
             </div>
 
             <div class = "gameboard">
-                <div class = "playerboard">
+                <div>
+                    <div class = "playerboard" id = "playerboard">
 
+                    </div>
+                    <div class = "playerboard-label">
+                        <h2>Player Board</h2>
+                    </div>
                 </div>
-                <div class = "pcboard">
-                    
+                <div>
+                    <div class = "pcboard" id = "pcboard">
+                    </div>
+                    <div class = "pcboard-label">
+                        <h2>Computer Board</h2>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <script type="text/javascript" src="app.js"></script>
+
     </body>
 </html>
