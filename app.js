@@ -107,8 +107,8 @@ function checkCell(board, x, y) {
 function handleClick(event) {
     const clicked_cell = event.target;
     const coordinates = getCellCoordinates(clicked_cell);
-    const row = parseInt(clicked_cell.dataset.row);
-    const col = parseInt(clicked_cell.dataset.row);
+    const row = coordinates[0];
+    const col = coordinates[1];
     console.log("row: " + row);
     console.log('column: ' + col);
     const msg = document.getElementById('message-list');
@@ -146,6 +146,7 @@ function handleClick(event) {
     }
 }
 
+/*
 function playerSetup() {
     for (const ship in ships) {
         ship.addEventListener('dragstart', dragStart);
@@ -180,7 +181,7 @@ function drop(event) {
 
 }
 
-/*
+
 function getShipLength(ship_id) {
     if (ship_id == 'carrier')       return 5;
     if (ship_id == 'battleship')    return 4;
@@ -188,17 +189,20 @@ function getShipLength(ship_id) {
     if (ship_id == 'submarine')     return 3;
     if (ship_id == 'patrol_boat')   return 2;
     return 0; 
-}*/
+}
+
+*/
 
 function getCellCoordinates(cell) {
     const row = parseInt(cell.dataset.row);
-    const col = parseInt(cell.dataset.row);
+    const col = parseInt(cell.dataset.col);
     return [row, col];
 }
 
 function startGame(){
     pc_gameboard.addEventListener("click", handleClick);
 }
+
 
 var counter = 0;
 var row = 10;
@@ -215,7 +219,7 @@ var ships = [carrier, battleship, destroyer, submarine, patrol_boat]
 
 var player_gameboard = document.getElementById("playerboard")
 var pc_gameboard = document.getElementById("pcboard")
-var ships = document.querySelectorAll('.ship');
+//var ships = document.querySelectorAll('.ship');
 
 player_array_board = [ 
     [0,0,0,0,0,0,0,0,0,0],
@@ -246,7 +250,7 @@ pc_array_board = [
 createPlayerGameBoard();
 createComputerGameBoard();
 generatePCBoard(pc_array_board, ships);
-playerSetup();
+//playerSetup();
 console.log(pc_array_board);
 
 startGame();
