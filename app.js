@@ -106,8 +106,9 @@ function checkCell(board, x, y) {
 
 function handleClick(event) {
     const clicked_cell = event.target;
+    const coordinates = getCellCoordinates(clicked_cell);
     const row = parseInt(clicked_cell.dataset.row);
-    const col = parseInt(clicked_cell.dataset.col);
+    const col = parseInt(clicked_cell.dataset.row);
     console.log("row: " + row);
     console.log('column: ' + col);
     const msg = document.getElementById('message-list');
@@ -145,6 +146,60 @@ function handleClick(event) {
     }
 }
 
+function playerSetup() {
+    for (const ship in ships) {
+        ship.addEventListener('dragstart', dragStart);
+        ship.addEventListener('dragend', dragEnd);
+    }
+
+    player_gameboard.addEventListener('dragover', dragOver);
+    player_gameboard.addEventListener('drop', drop);
+}
+
+function dragStart(event) {
+    event.dataTransfer.setData('text/plain', this.id);
+}
+
+function dragOver(event) {
+    event.preventDefault();
+}
+
+function drop(event) {
+    event.preventDefault();
+    if (!draggedShip) {
+        return;
+    }
+
+    const cell = event.target.closest('.cell');
+    if (cell) {
+        const ship_id = draggedShip.id;
+        const shipLength = getShipLength(ship_id);
+        const orientation = event.shiftKey ? 'vertical' : horizontal;
+        const [x, y] = getCellCoordinates(cell);
+    }
+
+}
+
+/*
+function getShipLength(ship_id) {
+    if (ship_id == 'carrier')       return 5;
+    if (ship_id == 'battleship')    return 4;
+    if (ship_id == 'destroyer')     return 3;
+    if (ship_id == 'submarine')     return 3;
+    if (ship_id == 'patrol_boat')   return 2;
+    return 0; 
+}*/
+
+function getCellCoordinates(cell) {
+    const row = parseInt(cell.dataset.row);
+    const col = parseInt(cell.dataset.row);
+    return [row, col];
+}
+
+function startGame(){
+    pc_gameboard.addEventListener("click", handleClick);
+}
+
 var counter = 0;
 var row = 10;
 var col = 10;
@@ -154,11 +209,13 @@ var battleship = 4;
 var destroyer = 3;
 var submarine = 3;
 var patrol_boat = 2;
+let draggedShip;
 
 var ships = [carrier, battleship, destroyer, submarine, patrol_boat]
 
 var player_gameboard = document.getElementById("playerboard")
 var pc_gameboard = document.getElementById("pcboard")
+var ships = document.querySelectorAll('.ship');
 
 player_array_board = [ 
     [0,0,0,0,0,0,0,0,0,0],
@@ -189,6 +246,7 @@ pc_array_board = [
 createPlayerGameBoard();
 createComputerGameBoard();
 generatePCBoard(pc_array_board, ships);
+playerSetup();
 console.log(pc_array_board);
 
-pc_gameboard.addEventListener("click", handleClick);
+startGame();

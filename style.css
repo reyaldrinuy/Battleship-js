@@ -9,12 +9,12 @@ body {
 }
 
 .game-container {
-    width: 75%;
     background-color: white;
     border-style: solid;
     border-color:black;
     padding: 10px;
     font-family: 'Outfit', sans-serif;
+    width: 90%;
 }
 
 .banner {
