@@ -106,18 +106,46 @@ function checkCell(board, x, y) {
 
 function handleClick(event) {
     const clicked_cell = event.target;
-    const row = clicked_cell.dataset.row;
-    const col = clicked_cell.dataset.col;
+    const row = parseInt(clicked_cell.dataset.row);
+    const col = parseInt(clicked_cell.dataset.col);
+    console.log("row: " + row);
+    console.log('column: ' + col);
+    const msg = document.getElementById('message-list');
+    const circle = document.createElement('div');
+    const message = document.createElement('p');
+    message.classList.add('messages');
+    circle.classList.add('hit-circle');
 
-    if (pc_array_board[row][col] == 1) {
-        clicked_cell.style.backgroundColor = 'red';
+    if (pc_array_board[row][col] == 2) {
+        message.textContent = "You have already sunken that part of a ship! (Try another spot).";
+        msg.appendChild(message);
+    } else if (pc_array_board[row][col] == 3) {
+        message.textContent = "You shot at that location already and missed! (Try another spot).";
+        msg.appendChild(message);
+    } else {
+        if (pc_array_board[row][col] == 1) {
+            clicked_cell.style.backgroundColor = 'red';
+            clicked_cell.appendChild(circle);
+            pc_array_board[row][col] = 2;
+            counter++;
+    
+        } else {
+            clicked_cell.style.backgroundColor = '#c7c7c7';
+            clicked_cell.appendChild(circle);
+            pc_array_board[row][col] = 3;
+        }
+    }
 
-        const circle = document.createElement('div');
-        circle.classList.add('hit-circle');
-        clicked_cell.appendChild(circle);
+    if (counter == 17) {
+        message.textContent = "You have won the game!";
+        message.classList.add('winner-text');
+        msg.appendChild(message);
+        pc_gameboard.removeEventListener("click", handleClick);
+        return; 
     }
 }
 
+var counter = 0;
 var row = 10;
 var col = 10;
 
