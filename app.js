@@ -146,12 +146,34 @@ function handleClick(event) {
     }
 }
 
-/*
-function playerSetup() {
-    for (const ship in ships) {
-        ship.addEventListener('dragstart', dragStart);
-        ship.addEventListener('dragend', dragEnd);
-    }
+
+function playerSetup(shipElements, ship_lengths) {
+    shipElements.forEach((shipElement, index) => {
+        const shipLength = ship_lengths[index];
+        const shipName = shipElement.id;
+        console.log(shipName);
+
+
+        const shipContainer = document.createElement('div');
+        shipContainer.classList.add('ship-container');
+
+
+        // Create cells for the ship
+        for (let j = 0; j < shipLength; j++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            // Add classes for visual representation if needed
+            shipContainer.appendChild(cell);
+        }
+        
+        // Make the ship draggable
+        shipElement.setAttribute('draggable', true);
+        shipElement.addEventListener('dragstart', dragStart);
+        shipElement.addEventListener('dragend', dragEnd)
+
+        // Append ship container to the parent element
+        shipElement.appendChild(shipContainer);
+    });
 
     player_gameboard.addEventListener('dragover', dragOver);
     player_gameboard.addEventListener('drop', drop);
@@ -159,6 +181,10 @@ function playerSetup() {
 
 function dragStart(event) {
     event.dataTransfer.setData('text/plain', this.id);
+}
+
+function dragEnd() {
+    draggedShip = null;
 }
 
 function dragOver(event) {
@@ -171,16 +197,31 @@ function drop(event) {
         return;
     }
 
+    const playerBoard = document.getElementById('playerboard');
     const cell = event.target.closest('.cell');
-    if (cell) {
+
+    // Ensure the target is a cell and belongs to the player board
+    if (cell && playerBoard.contains(cell)) {
+        console.log("cell works");
         const ship_id = draggedShip.id;
         const shipLength = getShipLength(ship_id);
-        const orientation = event.shiftKey ? 'vertical' : horizontal;
         const [x, y] = getCellCoordinates(cell);
+
+        // Remove any existing ship cells in the area
+        const existingShipCells = document.querySelectorAll('.player-cell.ship-cell');
+        existingShipCells.forEach(cell => {
+            cell.classList.remove('ship-cell');
+        });
+
+        // Place the ship on the player board
+        for (let i = 0; i < shipLength; i++) {
+            const newX = x + (i % shipLength);
+            const newY = y + Math.floor(i / shipLength);
+            const boardCell = document.querySelector(`.player-cell[data-row='${newX}'][data-col='${newY}']`);
+            boardCell.classList.add('ship-cell');
+        }
     }
-
 }
-
 
 function getShipLength(ship_id) {
     if (ship_id == 'carrier')       return 5;
@@ -191,7 +232,7 @@ function getShipLength(ship_id) {
     return 0; 
 }
 
-*/
+
 
 function getCellCoordinates(cell) {
     const row = parseInt(cell.dataset.row);
@@ -219,7 +260,7 @@ var ships = [carrier, battleship, destroyer, submarine, patrol_boat]
 
 var player_gameboard = document.getElementById("playerboard")
 var pc_gameboard = document.getElementById("pcboard")
-//var ships = document.querySelectorAll('.ship');
+var player_ships = document.querySelectorAll('.ship');
 
 player_array_board = [ 
     [0,0,0,0,0,0,0,0,0,0],
@@ -250,7 +291,7 @@ pc_array_board = [
 createPlayerGameBoard();
 createComputerGameBoard();
 generatePCBoard(pc_array_board, ships);
-//playerSetup();
+playerSetup(player_ships, ships);
 console.log(pc_array_board);
 
 startGame();
