@@ -9,13 +9,11 @@
     </head>
 
     <body>
-        <div class = "game-container">
-            <div class = "banner">
-                <h1>Battleship - Rey Aldrin Uy</h1>
-            </div>
-
-            <div class = "gameboard">
-                <div>
+        <div class = "banner">
+            <h1>Battleship - Rey Aldrin Uy</h1>
+        </div>
+        <div class = "game-container" id = "game-container">
+                <div id = "playerboard-container">
                     <div class = "playerboard" id = "playerboard">
                     </div>
                     <div class = "playerboard-label">
@@ -49,7 +47,7 @@
                         <h2>Computer Board</h2>
                     </div>
                 </div>
-                <div>
+                <div class = "message-list-container">
                     <div class = "message-list" id = "message-list">
                         <p>Welcome to Battleships! Place your ships on the left board and press start to play!</p>
                     </div>
@@ -57,8 +55,9 @@
                         <h2>Messages</h2>
                     </div>
                 </div>
+                </div>
             </div>
-        </div>
+        
 
         <script type="text/javascript" src="app.js"></script>
 

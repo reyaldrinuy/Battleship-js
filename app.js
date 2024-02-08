@@ -175,12 +175,15 @@ function playerSetup(shipElements, ship_lengths) {
         shipElement.appendChild(shipContainer);
     });
 
+    console.log("playersetup successful");
     player_gameboard.addEventListener('dragover', dragOver);
     player_gameboard.addEventListener('drop', drop);
 }
 
 function dragStart(event) {
     event.dataTransfer.setData('text/plain', this.id);
+    draggedShip = this;
+    console.log( this.id + " is picked up");
 }
 
 function dragEnd() {
@@ -191,34 +194,69 @@ function dragOver(event) {
     event.preventDefault();
 }
 
+function parentDragOver(event) {
+    // Prevent the default dragover behavior to allow dropping
+    event.preventDefault();
+    console.log("parent drag over working");
+    
+    //const parent_element = event.currentTarget;
+
+    // Add specific logic for handling dragover event on the parent element
+    // For example, change the appearance of the parent element
+    //parent_element.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+    //parent_element.style.border = '2px dashed #ccc';
+}
+
+function cellDragOver(event) {
+    event.preventDefault();
+    // Add highlight class to the cell being dragged over
+    event.target.classList.add('highlight');
+}
+
 function drop(event) {
     event.preventDefault();
     if (!draggedShip) {
         return;
     }
 
+    console.log("drop is working");
+
     const playerBoard = document.getElementById('playerboard');
     const cell = event.target.closest('.cell');
 
-    // Ensure the target is a cell and belongs to the player board
     if (cell && playerBoard.contains(cell)) {
-        console.log("cell works");
         const ship_id = draggedShip.id;
         const shipLength = getShipLength(ship_id);
-        const [x, y] = getCellCoordinates(cell);
+        const [startX, startY] = getCellCoordinates(draggedShip); // Starting position of the ship
+        const [endX, endY] = getCellCoordinates(cell); // Target cell coordinates
 
-        // Remove any existing ship cells in the area
-        const existingShipCells = document.querySelectorAll('.player-cell.ship-cell');
-        existingShipCells.forEach(cell => {
-            cell.classList.remove('ship-cell');
-        });
+        // Determine the direction of the ship
+        let direction;
+        if (startX === endX) {
+            direction = 'horizontal';
+        } else if (startY === endY) {
+            direction = 'vertical';
+        } else {
+            // Invalid drop position
+            return;
+        }
 
-        // Place the ship on the player board
+        // Place the ship onto the game board
         for (let i = 0; i < shipLength; i++) {
-            const newX = x + (i % shipLength);
-            const newY = y + Math.floor(i / shipLength);
-            const boardCell = document.querySelector(`.player-cell[data-row='${newX}'][data-col='${newY}']`);
-            boardCell.classList.add('ship-cell');
+            let x = startX;
+            let y = startY;
+
+            if (direction === 'horizontal') {
+                y += i;
+            } else {
+                x += i;
+            }
+
+            // Get the cell corresponding to the current position
+            const boardCell = document.querySelector(`.player-cell[data-row='${x}'][data-col='${y}']`);
+            if (boardCell) {
+                boardCell.classList.add('ship-cell');
+            }
         }
     }
 }
@@ -258,9 +296,14 @@ let draggedShip;
 
 var ships = [carrier, battleship, destroyer, submarine, patrol_boat]
 
+var game_container = document.getElementById("game-container");
+var player_gameboard_container = document.getElementById("playerboard-container");
+
 var player_gameboard = document.getElementById("playerboard")
 var pc_gameboard = document.getElementById("pcboard")
 var player_ships = document.querySelectorAll('.ship');
+
+game_container.addEventListener('dragover', parentDragOver);
 
 player_array_board = [ 
     [0,0,0,0,0,0,0,0,0,0],

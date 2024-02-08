@@ -4,7 +4,9 @@ h1 {
 
 body {
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
     background-color: #f0f0f0; 
 }
 
@@ -14,7 +16,9 @@ body {
     border-color:black;
     padding: 10px;
     font-family: 'Outfit', sans-serif;
-    width: 90%;
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 2fr 2fr 1fr;
 }
 
 .banner {
@@ -38,11 +42,21 @@ body {
 
 }
 
+.playerboard-label {
+    display: flex;
+    justify-content: center;
+}
+
 .pcboard {
     display: grid;
     grid-template-columns: repeat(10, 40px);
     grid-template-rows: repeat(10, 40px);
     gap: 5px;
+}
+
+.pcboard-label {
+    display: flex;
+    justify-content: center;
 }
 
 .cell {
@@ -88,7 +102,20 @@ body {
 }
 
 .ship-container {
+    display: grid;
+    grid-template-columns: repeat(5, 40px);
+    gap: 5px;
+}
+
+.cell .highlight {
+    background-color: yellow;
+    border: 1px solid orange; /* Customize the border as needed */
+}
+
+.message-list-container {
     display: flex;
+    align-items: center;
+    flex-direction: column;
 }
 
 .message-list {
