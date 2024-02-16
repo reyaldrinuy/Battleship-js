@@ -1,0 +1,33 @@
+.banner {
+    text-align: center;
+}
+
+.board-container {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.grid-player-container {
+    display: grid;
+    grid-template-columns: repeat(10, 40px);
+    grid-template-rows: repeat(10, 40px);
+    gap: 3px;
+}
+
+.grid-computer-container {
+    display: grid;
+    grid-template-columns: repeat(10, 40px);
+    grid-template-rows: repeat(10, 40px);
+    gap: 3px;
+}
+
+.grid-cell {
+    width: 100%;
+    height: 100%;
+    background-color: #bbd1d7;
+    cursor: pointer; 
+}
+
+.grid-cell.ship {
+    background-color: #f22c3d;
+}
