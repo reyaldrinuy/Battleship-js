@@ -1,3 +1,7 @@
+body {
+    font-family: "Roboto", sans-serif;
+}
+
 .banner {
     text-align: center;
 }
@@ -5,6 +9,7 @@
 .board-container {
     display: flex;
     justify-content: space-evenly;
+    padding: 30px;
 }
 
 .grid-player-container {
@@ -25,9 +30,71 @@
     width: 100%;
     height: 100%;
     background-color: #bbd1d7;
+    border-style: solid;
+    border-color: white;
     cursor: pointer; 
 }
 
-.grid-cell.ship {
+.grid-cell.player-ship {
+    background-color: #A7A8AC;
+}
+
+.grid-cell.computer-ship {
     background-color: #f22c3d;
+}
+
+.ship-circle {
+    position: relative;
+    transform: translate(50%, 50%);
+    width: 20px; /* Adjust as needed */
+    height: 20px; /* Adjust as needed */
+    border-radius: 50%;
+    background-color: white; /* Adjust as needed */
+    display: none; /* Initially hide */
+}
+
+
+
+
+
+.message-container {
+    border-style: solid;
+    border-color: black;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    max-height: 427px;
+}
+
+.message {
+    width: 300px;
+    font-family: "Roboto", sans-serif;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-bottom: -20px;
+}
+
+.button {
+    display: flex;
+    justify-content: center;
+}
+
+.start-button {
+    width: 200px;
+    font-size: 15px;
+    color: white;
+    border: none;
+    background-color: #DF9572;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.start-button:hover {
+    background-color: #FFB282;
+    cursor: pointer;
 }
