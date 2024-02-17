@@ -62,8 +62,19 @@ function cellClick(event){
     const y = cell.dataset.y;
     const name = cell.dataset.board;
 
-    addMessage('Player shot at [x: ' + x + ' y: ' + y + '].');
-//    console.log(computer_gameboard);
+}
+
+function enablePlayerClick() {
+    document.querySelectorAll("[data-board='grid-computer-container']").forEach(cell => {
+        cell.addEventListener('click', cellClick);
+    });
+}
+
+function disablePlayerClick() {
+    document.querySelectorAll("[data-board='grid-computer-container']").forEach(cell => {
+        //console.log(cell);
+        cell.removeEventListener('click', cellClick);
+    });
 }
 
 // Randomly place ships for computer
@@ -120,16 +131,23 @@ function checkShipPlacement(x, y, length, orientation, board) {
 }
 
 function playerTurn() {
-    setTimeout(3000);
-        addMessage('Player Turn! Select a cell.');
 
+    if (!is_playerTurn) {
+        return;
+    }
+
+    setTimeout(function() {
         // adds event listener to computer grid
+        //enablePlayerClick();
+        addMessage('- Player Turn! Select a cell.');
         document.querySelectorAll("[data-board='grid-computer-container']").forEach(cell => {
+            
             cell.addEventListener('click', function(event) {
                 const x = parseInt(event.target.dataset.x);
                 const y = parseInt(event.target.dataset.y);
                 const isShip = computer_gameboard[x][y].ship;
-                
+                addMessage('Player shot at [x: ' + x + ' y: ' + y + '].');
+
                 // add circles on each cell to notify they got hit
                 if (computer_gameboard[x][y].hit == false) {
                     const ship_circle = document.createElement('div');
@@ -138,8 +156,7 @@ function playerTurn() {
     
                     computer_gameboard[x][y].hit = true;
                     ship_circle.style.display = 'block';
-                }
-                
+                } 
                 if (isShip) {
                     const ship_id = computer_gameboard[x][y].ship_id;
                     if (isShipDestroyed(ship_id, computer_gameboard)) {
@@ -148,58 +165,78 @@ function playerTurn() {
                 }
 
                 if (isGameOver(computer_gameboard)) {
-                    console.log('Player Wings!');
+                    console.log('Player wins!');
                 } else {
-                    currentPalyer = 'computer';
+                    is_playerTurn = false;
                     computerTurn();
                 }  
     
             });
         });
-
-        // check if game is over
-
-
+    }, 500); // 3000 milliseconds delay
 }
 
 function computerTurn() {
-
-    addMessage('Computer Turn!');
-    
-    setTimeout(3000);
-    // randomly selects a cell
-    const x = Math.floor(Math.random() * grid_size);
-    const y = Math.floor(Math.random() * grid_size);
-
-    if (player_gameboard[x][y].hit == false) {
-        const ship_circle = document.createElement('div');
-        ship_circle.classList.add('ship-circle');
-        document.getElementById(`cell-${x}-${y}-grid-player-container`).appendChild(ship_circle);
-        
-        player_gameboard[x][y].hit = true;
-        ship_circle.style.display = 'block';
-
-        if (player_gameboard[x][y].ship) {
-            
-            const ship_id = player_gameboard[x][y].ship_id;
-            console.log('Computer destroyed player\'s ship ' + ship_id);
-
-            if (isShipDestroyed(ship_id, player_gameboard)) {
-                console.log('Computer destroyed player\'s ship ' + ship_id);
-                highlightDestroyedShip(ship_id, player_gameboard, 'grid-player-container');
-            }
-        }
-
-        if (isGameOver(player_gameboard)) {
-            console.log('Computer wings!');
-        } else {
-            currentPlayer = 'player';
-            playerTurn();
-        }
+    if (is_playerTurn) {
+        return;
     }
+
+    //disablePlayerClick();
+    addMessage('- Computer Turn!');
+    setTimeout(function() {
+        // Randomly selects a cell
+        const x = Math.floor(Math.random() * grid_size);
+        const y = Math.floor(Math.random() * grid_size);
+        addMessage('Computer shot at [x: ' + x + ', y: ' + y +']');
+
+        if (player_gameboard[x][y].hit == false) {
+            const ship_circle = document.createElement('div');
+            ship_circle.classList.add('ship-circle');
+            document.getElementById(`cell-${x}-${y}-grid-player-container`).appendChild(ship_circle);
+            
+            player_gameboard[x][y].hit = true;
+            ship_circle.style.display = 'block';
+
+            if (player_gameboard[x][y].ship) {
+                const ship_id = player_gameboard[x][y].ship_id;
+
+                if (isShipDestroyed(ship_id, player_gameboard)) {
+                    switch (ship_id) {
+                        case 6:
+                            addMessage('Computer\'s CARRIER has been destroyed!');
+                            break;
+                        case 7:
+                            addMessage('Computer\'s BATTLESHIP has been destroyed!');
+                            break;
+                        case 8:
+                            addMessage('Computer\'s CRUISER has been destroyed!');
+                            break;
+                        case 9:
+                            addMessage('Computer\'s CRUISER has been destroyed!');
+                            break;
+                        case 10:
+                            addMessage('Computer\'s DESTROYER has been destroyed!');
+                            break;
+                    }
+                    highlightDestroyedShip(ship_id, player_gameboard, 'grid-player-container');
+                }
+            }
+
+            if (isGameOver(player_gameboard)) {
+                console.log('Computer wins!');
+            } else {
+                is_playerTurn = true;
+                playerTurn();
+            }
+        } else {
+            // If the computer hits a cell that's already been hit, try again
+            computerTurn();
+        }
+    }, 2000); // 2000 milliseconds delay
 }
 
 function isShipDestroyed(ship_id, board) {
+    console.log(ship_id);
     for (let i = 0; i < grid_size; i++) {
         for (let j = 0; j < grid_size; j++) {
             if (board[i][j].ship && board[i][j].ship_id == ship_id && !board[i][j].hit) {
@@ -207,7 +244,30 @@ function isShipDestroyed(ship_id, board) {
             }
         }
     }
+
     return true;
+}
+
+function highlightDestroyedShip(ship_id, gameboard, containerId) {
+    // Find the ship's cells on the gameboard
+    const shipCells = [];
+    for (let i = 0; i < gameboard.length; i++) {
+        for (let j = 0; j < gameboard[i].length; j++) {
+            if (gameboard[i][j].ship && gameboard[i][j].ship_id === ship_id) {
+                shipCells.push({ x: i, y: j });
+            }
+        }
+    }
+
+    // Highlight the ship's cells in the grid
+    const container = document.getElementById(containerId);
+    console.log(shipCells);
+    shipCells.forEach(cell => {
+        const cellElement = container.querySelector(`[data-x="${cell.x}"][data-y="${cell.y}"]`);
+        if (cellElement) {
+            cellElement.classList.add('destroyed'); // Apply CSS class to highlight destroyed ship
+        }
+    });
 }
 
 function isGameOver(board) {
@@ -223,9 +283,9 @@ function isGameOver(board) {
 
 // Begins function for selecting computer cells
 function startGame() {
-
     // User message; commence game!
     addMessage('Begin!');
+    has_started = true;
 
     // begin turns
     playerTurn();
@@ -246,8 +306,9 @@ const grid_size = 10;
 const ship_lengths = [5, 4, 3, 3, 2];
 const player_gameboard = initializeGameBoard();
 const computer_gameboard = initializeGameBoard();
-let currentTurn = 'player';
+let has_started = false;
 let next_ship_id = 1;
+let is_playerTurn = true;
 
 //console.log(player_gameboard);
 //console.log(computer_gameboard);

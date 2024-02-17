@@ -2,6 +2,22 @@ body {
     font-family: "Roboto", sans-serif;
 }
 
+*::-webkit-scrollbar {
+    width: 12px;
+  }
+  
+  *::-webkit-scrollbar-track {
+    background: white;
+    border-radius: 20px;
+    height: 100px;
+    padding-right: 10px;
+  }
+  
+  *::-webkit-scrollbar-thumb {
+    background-color: #DF9572;
+  }
+
+
 .banner {
     text-align: center;
 }
@@ -53,6 +69,9 @@ body {
     display: none; /* Initially hide */
 }
 
+.grid-cell.computer-ship.destroyed {
+    background-color: #1c191d; 
+}
 
 
 
@@ -60,7 +79,6 @@ body {
 .message-container {
     border-style: solid;
     border-color: black;
-    border-radius: 20px;
     display: flex;
     flex-direction: column;
     overflow: auto;
